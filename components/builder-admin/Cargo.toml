@@ -25,7 +25,7 @@ rustc-serialize = "*"
 serde = "*"
 serde_json = "*"
 staticfile = "*"
-toml = "*"
+toml = { version = "*", features = ["serde"] }
 unicase = "*"
 urlencoded = "*"
 

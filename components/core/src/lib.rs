@@ -23,6 +23,7 @@ extern crate libarchive;
 extern crate log;
 extern crate regex;
 extern crate rustc_serialize;
+extern crate serde;
 extern crate sodiumoxide;
 extern crate libsodium_sys;
 #[cfg(test)]

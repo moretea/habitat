@@ -25,7 +25,7 @@ rustc-serialize = "*"
 serde = "*"
 serde_json = "*"
 staticfile = "*"
-toml = "*"
+toml = { version = "*", features = ["serde"] }
 unicase = "*"
 
 [dependencies.clap]
@@ -35,6 +35,9 @@ features = [ "suggestions", "color", "unstable" ]
 [dependencies.zmq]
 git = "https://github.com/habitat-sh/rust-zmq.git"
 tag = "windows_fix_pr"
+
+[dependencies.builder_core]
+path = "../builder-core"
 
 [dependencies.habitat_core]
 path = "../core"

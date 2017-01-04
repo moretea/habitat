@@ -23,3 +23,6 @@ members = [
   "components/butterfly-test",
   "components/hab-butterfly",
 ]
+
+[profile.release]
+lto = true

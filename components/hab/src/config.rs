@@ -81,7 +81,7 @@ fn cli_config_path(use_sudo_user: bool) -> PathBuf {
     PathBuf::from(FS_ROOT_PATH).join(CLI_CONFIG_PATH)
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, Eq, RustcDecodable, RustcEncodable)]
 pub struct Config {
     pub auth_token: Option<String>,
     pub origin: Option<String>,

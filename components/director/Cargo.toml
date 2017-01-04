@@ -23,7 +23,7 @@ log = "*"
 regex = "*"
 rustc-serialize = "*"
 time = "*"
-toml = "*"
+toml = { version = "*", features = ["serde"] }
 wonder = "*"
 
 [dependencies.clap]

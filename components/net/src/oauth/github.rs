@@ -24,6 +24,7 @@ use hyper::status::StatusCode;
 use hyper::header::{Authorization, Accept, Bearer, UserAgent, qitem};
 use hyper::mime::{Mime, TopLevel, SubLevel};
 use protocol::{net, sessionsrv};
+use rustc_serialize::base64::FromBase64;
 use rustc_serialize::json;
 
 use config;
@@ -209,6 +210,12 @@ pub struct Contents {
     pub download_url: String,
     pub content: String,
     pub encoding: String,
+}
+
+impl Contents {
+    pub fn decode(&self) -> Result<Vec<u8>> {
+        self.content.from_base64().map_err(|e| Error::GitHubContentDecode(e))
+    }
 }
 
 #[derive(Debug, RustcEncodable, RustcDecodable)]

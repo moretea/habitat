@@ -38,6 +38,7 @@ extern crate redis;
 #[macro_use]
 extern crate router;
 extern crate rustc_serialize;
+extern crate serde;
 extern crate serde_json;
 extern crate time;
 extern crate toml;
@@ -65,6 +66,10 @@ use hab_net::server::NetIdent;
 use iron::typemap;
 
 use data_store::DataStore;
+
+mod types {
+    include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
+}
 
 pub struct Depot {
     pub config: Config,

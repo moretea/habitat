@@ -25,7 +25,7 @@ use protocol::sessionsrv::*;
 use router::Router;
 use serde_json;
 
-include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
+pub use types::http::*;
 
 pub fn account_show(req: &mut Request) -> IronResult<Response> {
     let params = req.extensions.get::<Router>().unwrap();

@@ -34,18 +34,6 @@ pub enum Error {
     ArchiveError(libarchive::error::ArchiveError),
     /// An invalid path to a keyfile was given.
     BadKeyPath(String),
-    /// Error reading raw contents of configuration file.
-    ConfigFileIO(io::Error),
-    /// Parsing error while reading a configuration file.
-    ConfigFileSyntax(String),
-    /// Expected a valid array of values for configuration field value.
-    ConfigInvalidArray(&'static str),
-    /// Expected a valid network address for configuration field value.
-    ConfigInvalidIpAddr(&'static str),
-    /// Expected a valid SocketAddr address pair for configuration field value.
-    ConfigInvalidSocketAddr(&'static str),
-    /// Expected a string for configuration field value.
-    ConfigInvalidString(&'static str),
     /// Crypto library error
     CryptoError(String),
     /// Occurs when a file that should exist does not or could not be read.
@@ -108,26 +96,6 @@ impl fmt::Display for Error {
                 format!("Invalid keypath: {}. Specify an absolute path to a file on disk.",
                         e)
             }
-            Error::ConfigFileIO(ref e) => format!("Error reading configuration file: {}", e),
-            Error::ConfigFileSyntax(ref e) => {
-                format!("Syntax errors while parsing TOML configuration file:\n\n{}",
-                        e)
-            }
-            Error::ConfigInvalidArray(ref f) => {
-                format!("Invalid array of values in config, field={}", f)
-            }
-            Error::ConfigInvalidIpAddr(ref f) => {
-                format!("Invalid address in config, field={}. (example: \"127.0.0.0\")",
-                        f)
-            }
-            Error::ConfigInvalidSocketAddr(ref f) => {
-                format!("Invalid network address pair in config, field={}. (example: \
-                         \"127.0.0.0:8080\")",
-                        f)
-            }
-            Error::ConfigInvalidString(ref f) => {
-                format!("Invalid string value in config, field={}.", f)
-            }
             Error::CryptoError(ref e) => format!("Crypto error: {}", e),
             Error::FileNotFound(ref e) => format!("File not found at: {}", e),
             Error::InvalidPackageIdent(ref e) => {
@@ -186,20 +154,6 @@ impl error::Error for Error {
         match *self {
             Error::ArchiveError(ref err) => err.description(),
             Error::BadKeyPath(_) => "An absolute path to a file on disk is required",
-            Error::ConfigFileIO(_) => "Unable to read the raw contents of a configuration file",
-            Error::ConfigFileSyntax(_) => "Error parsing contents of configuration file",
-            Error::ConfigInvalidArray(_) => {
-                "Invalid array of values encountered while parsing a configuration file"
-            }
-            Error::ConfigInvalidIpAddr(_) => {
-                "Invalid network address encountered while parsing a configuration file"
-            }
-            Error::ConfigInvalidSocketAddr(_) => {
-                "Invalid network address pair encountered while parsing a configuration file"
-            }
-            Error::ConfigInvalidString(_) => {
-                "Invalid string value encountered while parsing a configuration file"
-            }
             Error::CryptoError(_) => "Crypto error",
             Error::FileNotFound(_) => "File not found",
             Error::InvalidPackageIdent(_) => {

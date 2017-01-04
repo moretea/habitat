@@ -21,6 +21,7 @@ use std::result;
 use hyper;
 use protobuf;
 use protocol::net;
+use rustc_serialize::base64;
 use rustc_serialize::json;
 use zmq;
 
@@ -30,6 +31,7 @@ use oauth;
 pub enum Error {
     Auth(oauth::github::AuthErr),
     GitHubAPI(hyper::status::StatusCode, HashMap<String, String>),
+    GitHubContentDecode(base64::FromBase64Error),
     IO(io::Error),
     JsonDecode(json::DecoderError),
     MaxHops,
@@ -48,6 +50,7 @@ impl fmt::Display for Error {
         let msg = match *self {
             Error::Auth(ref e) => format!("GitHub Authentication error, {}", e),
             Error::GitHubAPI(ref c, ref m) => format!("[{}] {:?}", c, m),
+            Error::GitHubContentDecode(ref e) => format!("Unable to decode content, {}", e),
             Error::IO(ref e) => format!("{}", e),
             Error::JsonDecode(ref e) => format!("JSON decoding error, {}", e),
             Error::MaxHops => format!("Received a message containing too many network hops"),
@@ -69,6 +72,7 @@ impl error::Error for Error {
         match *self {
             Error::Auth(_) => "GitHub authorization error.",
             Error::GitHubAPI(_, _) => "GitHub API error.",
+            Error::GitHubContentDecode(_) => "Unable to base64 decode content body",
             Error::IO(ref err) => err.description(),
             Error::HTTP(_) => "Non-200 HTTP response.",
             Error::JsonDecode(ref err) => err.description(),

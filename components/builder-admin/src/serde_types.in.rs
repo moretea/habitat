@@ -12,43 +12,63 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use hab_net::privilege;
+use std::net::SocketAddr;
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct FeatureGrant {
-    team_id: u64,
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Config {
+    /// Public listening net address for HTTP requests
+    pub http_addr: SocketAddr,
+    /// List of net addresses for routing servers to connect to
+    pub routers: Vec<SocketAddr>,
+    /// URL to GitHub API
+    pub github_url: String,
+    /// Client identifier used for GitHub API requests
+    pub github_client_id: String,
+    /// Client secret used for GitHub API requests
+    pub github_client_secret: String,
+    /// Path to UI files to host over HTTP. If not set the UI will be disabled.
+    pub ui_root: Option<String>,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct FeatureFlagList(Vec<FeatureFlag>);
+pub mod http {
+    use hab_net::privilege;
 
-impl Default for FeatureFlagList {
-    fn default() -> Self {
-        let mut list = vec![];
-        list.push(FeatureFlag::new("Admin", privilege::ADMIN.bits()));
-        list.push(FeatureFlag::new("Builder", privilege::BUILDER.bits()));
-        FeatureFlagList(list)
+    #[derive(Clone, Serialize, Deserialize)]
+    pub struct FeatureGrant {
+        pub team_id: u64,
     }
-}
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct FeatureFlag {
-    name: String,
-    id: u32,
-}
+    #[derive(Clone, Serialize, Deserialize)]
+    pub struct FeatureFlagList(Vec<FeatureFlag>);
 
-impl FeatureFlag {
-    pub fn new(name: &'static str, id: u32) -> Self {
-        FeatureFlag {
-            name: name.to_string(),
-            id: id,
+    impl Default for FeatureFlagList {
+        fn default() -> Self {
+            let mut list = vec![];
+            list.push(FeatureFlag::new("Admin", privilege::ADMIN.bits()));
+            list.push(FeatureFlag::new("Builder", privilege::BUILDER.bits()));
+            FeatureFlagList(list)
         }
     }
-}
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct SearchTerm {
-    pub attr: String,
-    pub entity: String,
-    pub value: String,
+    #[derive(Clone, Serialize, Deserialize)]
+    pub struct FeatureFlag {
+        name: String,
+        id: u32,
+    }
+
+    impl FeatureFlag {
+        pub fn new(name: &'static str, id: u32) -> Self {
+            FeatureFlag {
+                name: name.to_string(),
+                id: id,
+            }
+        }
+    }
+
+    #[derive(Clone, Serialize, Deserialize)]
+    pub struct SearchTerm {
+        pub attr: String,
+        pub entity: String,
+        pub value: String,
+    }
 }

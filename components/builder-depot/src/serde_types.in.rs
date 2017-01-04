@@ -12,7 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct OriginCreateReq {
-    pub name: String,
+use std::net::SocketAddr;
+
+pub mod http {
+    #[derive(Clone, Serialize, Deserialize)]
+    pub struct OriginCreateReq {
+        pub name: String,
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+pub struct Config {
+    pub path: String,
+    pub listen_addr: SocketAddr,
+    pub datastore_addr: SocketAddr,
+    /// List of net addresses for routing servers to connect to
+    pub routers: Vec<SocketAddr>,
+    /// URL to GitHub API
+    pub github_url: String,
+    /// Client identifier used for GitHub API requests
+    pub github_client_id: String,
+    /// Client secret used for GitHub API requests
+    pub github_client_secret: String,
+    /// allows you to upload packages and public keys without auth
+    pub insecure: bool,
+    /// Whether to log events for funnel metrics
+    pub events_enabled: bool,
 }

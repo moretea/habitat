@@ -21,7 +21,7 @@ use toml;
 use error::{Error, Result};
 use super::ServiceDef;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, RustcDecodable, PartialEq, Eq)]
 pub struct Config {
     /// Service defs read from config.toml
     pub service_defs: Vec<ServiceDef>,

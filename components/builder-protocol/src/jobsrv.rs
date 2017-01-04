@@ -25,6 +25,8 @@ use sharding::InstaId;
 
 pub use message::jobsrv::*;
 
+pub const GITHUB_PUSH_NOTIFY_ID: u64 = 23;
+
 #[derive(Debug)]
 pub enum Error {
     BadJobState,

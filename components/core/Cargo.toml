@@ -17,9 +17,10 @@ libsodium-sys = "*"
 log = "*"
 regex = "*"
 rustc-serialize = "*"
+serde = "*"
 sodiumoxide = "*"
 time = "*"
-toml = "*"
+toml = { version = "*", features = ["serde"] }
 url = "*"
 
 [target.'cfg(not(windows))'.dependencies]

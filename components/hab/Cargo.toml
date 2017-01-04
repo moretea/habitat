@@ -20,7 +20,7 @@ pbr = "*"
 regex = "*"
 retry = "*"
 rustc-serialize = "*"
-toml = "*"
+toml = { version = "*", features = ["serde"] }
 url = "*"
 walkdir = "*"
 

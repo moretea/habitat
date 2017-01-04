@@ -31,7 +31,7 @@ rustc-serialize = "*"
 serde = "*"
 serde_json = "*"
 time = "*"
-toml = "*"
+toml = { version = "*", features = ["serde"] }
 unicase = "*"
 walkdir = "*"
 
