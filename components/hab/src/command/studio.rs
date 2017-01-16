@@ -132,7 +132,7 @@ mod inner {
     }
 }
 
-#[cfg(not(target_os = "linux"))]
+#[cfg(target_os = "macos" )]
 mod inner {
     use std::env;
     use std::ffi::OsString;
@@ -308,5 +308,52 @@ mod inner {
         fn retrieve_image_identifier() {
             assert_eq!(image_identifier(), format!("{}:{}", DOCKER_IMAGE, VERSION));
         }
+    }
+}
+
+#[cfg(target_os = "windows")]
+mod inner {
+    use std::ffi::OsString;
+    use std::path::PathBuf;
+    use std::str::FromStr;
+
+    use common::ui::UI;
+    use hcore::crypto::{init, default_cache_key_path};
+    use hcore::env as henv;
+    use hcore::fs::find_command;
+    use hcore::os::process;
+    use hcore::package::PackageIdent;
+
+    use error::{Error, Result};
+    use exec;
+
+    const STUDIO_CMD: &'static str = "hab-studio";
+    const STUDIO_CMD_ENVVAR: &'static str = "HAB_STUDIO_BINARY";
+    const STUDIO_PACKAGE_IDENT: &'static str = "core/hab-studio";
+
+    pub fn start(ui: &mut UI, args: Vec<OsString>) -> Result<()> {
+        let command = match henv::var(STUDIO_CMD_ENVVAR) {
+            Ok(command) => PathBuf::from(command),
+            Err(_) => {
+                init();
+                let ident = try!(PackageIdent::from_str(STUDIO_PACKAGE_IDENT));
+                try!(exec::command_from_pkg(ui,
+                                            STUDIO_CMD,
+                                            &ident,
+                                            &default_cache_key_path(None),
+                                            0))
+            }
+        };
+
+        if let Some(cmd) = find_command(command.to_string_lossy().as_ref()) {
+            try!(process::become_command(cmd, args));
+        } else {
+            return Err(Error::ExecCommandNotFound(command.to_string_lossy().into_owned()));
+        }
+        Ok(())
+    }
+
+    pub fn rerun_with_sudo_if_needed(_ui: &mut UI) -> Result<()> {
+        Ok(())
     }
 }
