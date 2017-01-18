@@ -247,6 +247,12 @@ function Enter-Studio {
   }
 }
 
+function Remove-Studio {
+  Write-HabInfo "Destroying Studio at $HAB_STUDIO_ROOT"
+
+  if(Test-Path $HAB_STUDIO_ROOT) { Remove-Item $HAB_STUDIO_ROOT -Recurse -Force }
+}
+
 # The current version of Habitat Studio
 $script:version='@version@'
 # The author of this program
