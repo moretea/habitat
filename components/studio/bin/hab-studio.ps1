@@ -247,6 +247,13 @@ function Enter-Studio {
   }
 }
 
+function Invoke-StudioBuild {
+  New-Studio
+  Write-HabInfo "Building '$($args[1])' in Studio at $HAB_STUDIO_ROOT"
+
+  & "$PSScriptRoot\hab-plan-build.ps1" $args[1]
+}
+
 function Remove-Studio {
   Write-HabInfo "Destroying Studio at $HAB_STUDIO_ROOT"
 
