@@ -201,11 +201,18 @@ EXAMPLES:
 "@
 }
 
+function Write-HabInfo($Message) {
+  Write-Host "   ${program}: " -ForegroundColor Cyan -NoNewline
+  Write-Host $Message
+}
+
 # ## Subcommand functions
 #
 # These are the implementations for each subcommand in the program.
 
 function New-Studio {
+  Write-HabInfo "Creating Studio at $HAB_STUDIO_ROOT"
+
   if(!(Test-Path $HAB_STUDIO_ROOT)) {
     mkdir $HAB_STUDIO_ROOT | Out-Null
   }
@@ -215,8 +222,6 @@ function New-Studio {
     mkdir src | Out-Null
     New-Item -Name src -ItemType Junction -target $SRC_PATH.Path
   }
-
-  New-PSDrive -Name "Habitat" -PSProvider FileSystem -Root $HAB_STUDIO_ROOT -Scope Script | Out-Null
 
   $pathArray = @(
     "$PSScriptRoot\hab",
@@ -230,7 +235,16 @@ function New-Studio {
 
 function Enter-Studio {
   New-Studio
-  Set-Location "Habitat:\src"
+  Write-HabInfo "Entering Studio at $HAB_STUDIO_ROOT"
+  $env:HAB_STUDIO_ENTER_ROOT = $HAB_STUDIO_ROOT
+  & "$PSScriptRoot\powershell\powershell.exe" -NoProfile -ExecutionPolicy bypass -NoLogo -NoExit -Command {
+    function prompt {
+      Write-Host "[HAB-STUDIO]" -NoNewLine -ForegroundColor Green
+      " $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel +1)) "
+    }
+    New-PSDrive -Name "Habitat" -PSProvider FileSystem -Root $env:HAB_STUDIO_ENTER_ROOT | Out-Null
+    Set-Location "Habitat:\src"
+  }
 }
 
 # The current version of Habitat Studio
@@ -273,9 +287,4 @@ switch ($args[0]) {
     Write-Help
     Write-Error "Invalid Argument $($args[0])"
   }
-}
-
-function prompt {
-  Write-Host "[HAB-STUDIO]" -NoNewLine -ForegroundColor Green
-  " $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel +1)) "
 }
