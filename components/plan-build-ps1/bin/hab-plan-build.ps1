@@ -578,7 +578,7 @@ function _Complete-DependencyResolution {
       _Exit-With "Resolving '$dep' failed, should this be built first?" 1
     }
   }
- 
+
   # Build `${pkg_build_tdeps_resolved[@]}` containing all the direct build
   # dependencies, and the run dependencies for each direct build dependency.
 
@@ -794,6 +794,18 @@ function _Set-Environment {
 function Invoke-PrepareWrapper {
     Write-BuildLine "Preparing to build"
     Push-Location "$HAB_CACHE_SRC_PATH\$pkg_dirname"
+    foreach($dir in $pkg_lib_dirs) {
+      New-Item $dir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+    foreach($dir in $pkg_bin_dirs) {
+      New-Item $dir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+    foreach($dir in $pkg_include_dirs) {
+      New-Item $dir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+    foreach($dir in $pkg_pconfig_dirs) {
+      New-Item $dir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+    }
     try { Invoke-Prepare } finally { Pop-Location }
 }
 
@@ -1038,8 +1050,7 @@ function _Write-Metadata {
             Out-File "$pkg_prefix\EXPOSES" -Encoding ascii
     }
 
-   # @TODO fin - INTERPRETERS
-    
+    # @TODO fin - INTERPRETERS
     $pkg_build_deps_resolved | % {
         Resolve-HabPkgPath $_ | Out-File $pkg_prefix\BUILD_DEPS -Encoding ascii -Append
     }

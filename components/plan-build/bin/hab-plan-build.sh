@@ -1735,6 +1735,18 @@ _fix_libtool() {
 do_prepare_wrapper() {
   build_line "Preparing to build"
   pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname" > /dev/null
+  for dir in "${pkg_lib_dirs[@]}"; do
+    mkdir -p $dir
+  done
+  for dir in "${pkg_bin_dirs[@]}"; do
+    mkdir -p $dir
+  done
+  for dir in "${pkg_include_dirs[@]}"; do
+    mkdir -p $dir
+  done
+  for dir in "${pkg_pconfig_dirs[@]}"; do
+    mkdir -p $dir
+  done
   do_prepare
   popd > /dev/null
 }
