@@ -247,6 +247,14 @@ function Enter-Studio {
   }
 }
 
+function Invoke-StudioRun {
+  New-Studio
+  Write-HabInfo "Running '$($args[1])' in Studio at $HAB_STUDIO_ROOT"
+  New-PSDrive -Name "Habitat" -PSProvider FileSystem -Root $HAB_STUDIO_ROOT | Out-Null
+  Set-Location "Habitat:\src"
+  Invoke-Expression $args[1]
+}
+
 function Invoke-StudioBuild {
   New-Studio
   Write-HabInfo "Building '$($args[1])' in Studio at $HAB_STUDIO_ROOT"
@@ -291,6 +299,7 @@ else {
 
 switch ($args[0]) {
   "new" { New-Studio @args}
+  "run" { Invoke-StudioRun @args}
   "rm" { Remove-Studio @args }
   "enter" { Enter-Studio @args }
   "build" { Invoke-StudioBuild @args }
